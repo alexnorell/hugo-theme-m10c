@@ -1,0 +1,35 @@
+{{ $reactions := .Get "reactions" | default "" }}
+
+{{ $reactionList := slice }}
+{{ if ne $reactions "" }}
+  {{ range (split $reactions ",") }}
+    {{ $reactionData := split . "|" }}
+    {{ $reaction := dict "emoji" (index $reactionData 0) "count" (index $reactionData 1) }}
+    {{ $reactionList = $reactionList | append $reaction }}
+  {{ end }}
+{{ end }}
+
+<div class="slack-message">
+    <div class="slack-message__avatar">
+        <img src="{{ .Get "avatar" }}" alt="User Avatar">
+    </div>
+    <div class="slack-message__content">
+        <div class="slack-message__header">
+            <span class="slack-message__username">{{ .Get "username" }}</span>
+            <span class="slack-message__timestamp">{{ .Get "timestamp" }}</span>
+        </div>
+        <div class="slack-message__text">
+            {{ .Get "text" | emojify }}
+        </div>
+        {{ if gt (len $reactionList) 0 }}
+        <div class="slack-message__reactions">
+            {{ range $reactionList }}
+            <div class="slack-message__reaction">
+                <span class="slack-message__reaction-emoji">{{ .emoji | emojify }}</span>
+                <span>{{ .count }}</span>
+            </div>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+</div>
