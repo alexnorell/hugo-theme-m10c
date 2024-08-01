@@ -8,6 +8,13 @@
           <span class="posts-list-item-description">
             {{ partial "icon.html" (dict "ctx" $ "name" "calendar") }}
             {{ .PublishDate.Format .Site.Params.date_format }}
+            {{ with .Params.categories }}
+            <span class="posts-list-item-separator">-</span>
+            {{ partial "icon.html" (dict "ctx" $ "name" "folder") }}
+            {{- range . -}}
+            {{ strings.Title .  }}
+            {{ end }}
+            {{ end }}
             <span class="posts-list-item-separator">-</span>
             {{ partial "icon.html" (dict "ctx" $ "name" "clock") }}
             {{ .ReadingTime }} min read
